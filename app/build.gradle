@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
     defaultConfig {
@@ -40,5 +42,11 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$testEspressoVersion"
+//    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:$permissVersion"
+    kapt "com.github.hotchemi:permissionsdispatcher-processor:$permissVersion"
+    implementation("com.github.hotchemi:permissionsdispatcher:$permissVersion") {
+        // if you don't use android.app.Fragment you can exclude support for them
+        exclude module: "support-v13"
+    }
     api project(':DroidPlugin')
 }

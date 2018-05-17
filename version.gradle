@@ -13,4 +13,5 @@ ext{
     testEspressoVersion = '3.0.2'
 
     constraintVersion   = '1.1.0'
+    permissVersion      = '3.2.0'
 }
