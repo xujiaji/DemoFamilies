@@ -1,30 +1,21 @@
 package com.demofamilies.app
 
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
+import com.demofamilies.app.base.RequestPermissionActivity
 import com.demofamilies.app.natives.NativeUtil
 import com.morgoo.droidplugin.pm.PluginManager
 import com.morgoo.helper.compat.PackageManagerCompat.INSTALL_FAILED_NOT_SUPPORT_ABI
 import com.morgoo.helper.compat.PackageManagerCompat.INSTALL_SUCCEEDED
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-import android.Manifest.permission
-import android.R.string.cancel
-import android.support.v7.app.AlertDialog
-import permissions.dispatcher.*
-import android.support.annotation.NonNull
 
 
-
-
-@RuntimePermissions
-class MainActivity : AppCompatActivity() {
+class MainActivity : RequestPermissionActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,12 +43,12 @@ class MainActivity : AppCompatActivity() {
 //                    RePlugin.createIntent(
 //                            "solid.ren.themeskinning",
 //                            "solid.ren.themeskinning.activity.MainActivity"))
-            showCameraWithPermissionCheck()
+            checkAndRunStorageHandle()
         }
     }
 
-    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    fun showCamera() {
+    override fun onStorageHandle() {
+        super.onStorageHandle()
         val apkPath = Environment.getExternalStorageDirectory().absolutePath + File.separator + "plugin.apk"
         val re = PluginManager.getInstance().installPackage(apkPath, 0)
         val info = packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES)
@@ -82,28 +73,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    fun showRationaleForCamera(request: PermissionRequest) {
-        AlertDialog.Builder(this)
-                .setMessage("请求权限")
-                .setPositiveButton("允许", { dialog, button -> request.proceed() })
-                .setNegativeButton("取消", { dialog, button -> request.cancel() })
-                .show()
-    }
-
-    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    fun showDeniedForCamera() {
-        Toast.makeText(this, "showDeniedForCamera", Toast.LENGTH_SHORT).show()
-    }
-
-    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    fun showNeverAskForCamera() {
-        Toast.makeText(this, "showNeverAskForCamera", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // NOTE: delegate the permission handling to generated method
-        onRequestPermissionsResult(requestCode, grantResults)
-    }
 }
